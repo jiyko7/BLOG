@@ -1,8 +1,13 @@
 package com.woong.blog.test;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,4 +63,21 @@ public class DummyController {
 		// 하지만 스프링부트는 MessageConverter가 자동 작동 - 자바 오브젝트를 Jackson 라이브러리를 통해 JSON으로 자동 변환 - 브라우저가 인식
 		return user;
 	}
+	
+		//http://localhost:8000/blog/dummy/users
+		@GetMapping("/dummy/users")
+		public List<User> list() {
+			return userRepository.findAll();
+		}
+		
+		//http://localhost:8000/blog/dummy/user
+		//http://localhost:8000/blog/dummy/user?page=페이지번호
+		//페이지번호 0,1.2,3 순으로 올라가면 페이지가 넘어감
+		@GetMapping("/dummy/user") 
+		public List<User> pageList(@PageableDefault(size = 2, sort = "id", direction = Direction.DESC) Pageable pageable) {
+			Page<User> pagingUser = userRepository.findAll(pageable);
+			List<User> users = pagingUser.getContent();
+			return users;
+		}
+	
 }
