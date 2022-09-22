@@ -6,10 +6,12 @@ import java.util.function.Supplier;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,7 +101,18 @@ public class DummyController {
 			user.setEmail(requestUser.getEmail());
 			
 			//userRepository.save(requestUser); //save는 id를 전달하지 않으면 insert인데 id를 전달하면 update해줌
-			return null;
+			return user;
+		}
+		
+		@DeleteMapping("/dummy/user/{id}")
+		public String delete(@PathVariable int id) {
+			try {
+				userRepository.deleteById(id);
+			} catch (EmptyResultDataAccessException e) {
+				return "해당 id는 존재하지 않아 삭제할 수 없습니다";
+			}
+			
+			return "삭제되었습니다 id : "+ id;
 		}
 	
 }
