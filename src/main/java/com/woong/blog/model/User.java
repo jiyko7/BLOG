@@ -33,7 +33,7 @@ public class User {
 	// DB의 넘버링 전략 (오라클 = sequence, MySQL = auto_increment)
 	private int id; //시퀀스, auto_increment
 	
-	@Column(nullable=false, length = 30)
+	@Column(nullable=false, length = 30, unique = true)
 	private String username; //아이디
 	
 	@Column(nullable=false, length = 100) // 패스워드를 해쉬로 변경해 암호화하기 때문
